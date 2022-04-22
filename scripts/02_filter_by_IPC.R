@@ -155,14 +155,18 @@ patents_A42B <- patents_A42B %>%
   unnest_tokens(word, text)
 
 patents_A42B <- patents_A42B %>%
-  anti_join(stop_words)
+  filter(str_detect(word, "(?!^\\d+$)^.+$"))
 
-patents_A42B %>%
-  count(word, sort = TRUE)
+patents_A42B <- patents_A42B %>%
+  anti_join(stop_words) %>%
+  anti_join(extra_words)
+
+patents_A42B <- patents_A42B %>%
+  mutate(word = wordStem(word)) # stemming
 
 patents_A42B %>%
   count(word, sort = TRUE) %>%
-  filter(n > 300) %>%
+  filter(n > 200) %>%
   # reorder levels of factor word wrt n
   mutate(word = reorder(word, n)) %>%
   ggplot(aes(word, n)) +
@@ -170,5 +174,6 @@ patents_A42B %>%
   xlab(NULL) +
   coord_flip() +
   theme_bw()
+
 
 

@@ -1,7 +1,7 @@
 library(tidyverse)
 library(fs)
 
-s = "Hello world!"
+s = "Hello all world!"
 sa = c("hello", "world", "!")
 
 # string lenght
@@ -13,6 +13,9 @@ str_c("Hello", "world!", sep=" ")
 # vectorized
 str_c(c("1", "2", "3"), c("a", "b", "c"))
 str_c("prefix-", c("a", "b", "c"), "-suffix")
+
+str_detect(s, 'Hell.* worl')
+
 
 # REGULAR EXPR
 # .: matches any character.
@@ -54,6 +57,7 @@ str_detect(c("apple", "banana", "pear"), "e")
 
 str_count("apple", "p")
 str_count(c("apple", "banana", "pear"), "a")
+sum(str_count("apple", c("a", "p", "l", "r")) * c(1, 0.5, 0.5, 0.2))
 
 str_extract(Gregory, "mov.?")
 str_extract_all(Gregory, "mov.?")
