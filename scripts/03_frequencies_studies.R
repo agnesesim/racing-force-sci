@@ -5,31 +5,48 @@ library(SnowballC)
 library(fs)
 
 patents <- read_csv("data/main_dataset.csv")
+patents_text <- get_text_clean(patents)
 
-patents_text <- patents %>%
-  mutate(patent_id = substr(filename, 0, unlist(gregexpr(pattern ='.txt',filename)) -1 )) %>%
-  #mutate(text = paste(title, abstract, claims, sep=" ")) %>%
-  mutate(text = title) %>%
-  select(patent_id, ipc_classes, text)
+get_word_cloud(patents_text %>% 
+                 filter(str_detect(ipc_classes, "^H") | str_detect(ipc_classes, ',H')))
 
-tidy_patents <- patents_text %>%
-  unnest_tokens(word, text)
+get_word_frquency(patents_text %>% 
+                    filter(str_detect(ipc_classes, "^H") | str_detect(ipc_classes, ',H')))
 
-tidy_patents <- tidy_patents %>%
-  filter(str_detect(word, "(?!^\\d+$)^.+$"))
+frequency <- get_word_frquency(patents_text)
+frequency %>% filter(str_detect(word, "imag."))
 
-extra_words = c("claims", "claim", "method", "methods", "system")
-extra_words <- as_tibble(extra_words) %>%
-  rename( word = value)
+get_top_words(patents_text)
 
-tidy_patents <- tidy_patents %>%
-  anti_join(stop_words) %>%
-  anti_join(extra_words)
+############################# prove ############################# 
 
-tidy_patents <- tidy_patents %>%
-  mutate(word = wordStem(word)) # stemming
+patents_text %>% filter(str_detect(ipc_classes, "^D")) %>%
+  mutate(count = str_count(text, "imag.*")) %>%
+  mutate(freq = (count/str_count(text, "\\s"))*100) %>% 
+  arrange(desc(freq))
 
-tidy_patents %>%
-  count(word) %>%
-  with(wordcloud(word, n, max.words = 100))
+patents_text %>% filter(str_detect(ipc_classes, "^D") | str_detect(ipc_classes, ",D"))  %>%
+  mutate(n_image = str_count(text,"imag.")) %>%
+  mutate(n_cv = str_count(text,"computer vision")) %>%
+  mutate(count = n_image + n_cv) %>%
+  mutate(freq = (count/str_count(text, "\\s"))*100) %>% 
+  arrange(desc(n_cv))
+
+patents_text %>% filter(str_detect(ipc_classes, "^H"))  %>%
+  mutate(n_elab = str_count(text,"imag. elaborat.")) %>%
+  mutate(n_proc = str_count(text,"imag. process.")) %>%
+  mutate(n_analy = str_count(text,"imag. analys.")) %>%
+  mutate(n_cv = str_count(text,"computer vision")) %>%
+  mutate(count = n_elab + n_proc + n_analy + n_cv) %>%
+  mutate(freq = (count/str_count(text, "\\s"))*100) %>% 
+  arrange(desc(freq))
+
+patents_text %>% filter(str_detect(ipc_classes, "^D") | str_detect(ipc_classes, ",D"))  %>%
+  mutate(n_image = str_count(text,"imag.")) %>%
+  mutate(n_cv = str_count(text,"computer vision")) %>%
+  mutate(count = n_image + n_cv) %>%
+  mutate(freq = (count/str_count(text, "\\s"))*100) %>% 
+  arrange(desc(n_cv))
+
+
 

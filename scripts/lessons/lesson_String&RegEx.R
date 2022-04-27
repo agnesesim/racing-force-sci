@@ -57,6 +57,10 @@ str_detect(c("apple", "banana", "pear"), "e")
 
 str_count("apple", "p")
 str_count(c("apple", "banana", "pear"), "a")
+str_count("apple", c("a", "pp", "l", "r"))
+
+str_count("apple", "[aplr]")
+
 sum(str_count("apple", c("a", "p", "l", "r")) * c(1, 0.5, 0.5, 0.2))
 
 str_extract(Gregory, "mov.?")
