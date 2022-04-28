@@ -8,14 +8,12 @@ library(fs)
 # funzione per la fusione e la pulizia del testo 
 get_text_clean <- function(data){
   data_text <- data %>%
-    # estraggo il numero identificativo del patent
-    mutate(patent_id = substr(filename, 0, unlist(gregexpr(pattern ='.txt',filename)) -1 )) %>%
     # riunisco tutto il testo del patent sotto un solo attributo 'text'
-    mutate(text = paste(title, abstract, claims, sep="")) %>%
+    mutate(text = paste(title, abstract, claims, sep=" ")) %>%
     # trasformo tutto il testo in minuscolo
     mutate(text = tolower(text)) %>% 
     # rimuovo la punteggiatura
-    mutate(text = str_remove_all(text, '[[:punct:]]')) %>% 
+    #mutate(text = str_remove_all(text, '[[:punct:]]')) %>% 
     # estraggo solo le 3 colonne interessanti per la ricerca
     select(patent_id, ipc_classes, text)
   
@@ -23,8 +21,8 @@ get_text_clean <- function(data){
 }
 
 # parole molto frequenti nei patent indipendentemente dall'invenzione
-patent_words = c("claims", "claim", "method", "system", "comprise", "data")
-patent_words <- as_tibble(patent_words) %>%
+words_to_delete = c("claims", "claim", "method", "system", "comprise", "data")
+words_to_delete <- as_tibble(words_to_delete) %>%
   rename( word = value)
 
 # restituisce la lista delle parole presenti nei patents
@@ -39,7 +37,7 @@ get_words <- function(data) {
   # rimuove le stop words e le parole comuni ai patent
   tidy_data <- tidy_data %>%
     anti_join(stop_words, by="word") %>%
-    anti_join(patent_words, by="word")
+    anti_join(words_to_delete, by="word")
   
   # stemming
   tidy_data <- tidy_data %>%
@@ -84,3 +82,4 @@ get_top_words <- function(data){
     coord_flip() +
     theme_bw()
 }
+
