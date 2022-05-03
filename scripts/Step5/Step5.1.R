@@ -39,7 +39,7 @@ filter_founds <- function(data, freq){
   return(found)
 }
 
-patents_foundInOr <- filter_founds(patents_words_vectors, 0)
+patents_foundInOr <- filter_founds(patents_words_vectors, 1)
 write_csv(patents_foundInOr,"patents_foundInOr.csv")
 
 patents_foundInAnd <- patents_words_vectors %>%

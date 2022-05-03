@@ -83,3 +83,12 @@ get_top_words <- function(data){
     theme_bw()
 }
 
+
+
+#########################
+
+filter_founds <- function(data, frequence){
+  found <- data %>%
+    filter(freq>frequence) 
+  return(found)
+}

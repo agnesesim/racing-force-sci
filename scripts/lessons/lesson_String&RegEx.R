@@ -54,6 +54,7 @@ str_view(CCCP, "CC*")
 
 str_detect("apple", "p")
 str_detect(c("apple", "banana", "pear"), "e")
+str_detect("apple", c("e", "a", "d"))
 
 str_count("apple", "p")
 str_count(c("apple", "banana", "pear"), "a")
