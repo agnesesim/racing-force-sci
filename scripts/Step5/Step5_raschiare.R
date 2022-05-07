@@ -94,6 +94,10 @@ tmp_patents_0 <- tmp_patents_0 %>%
   filter( !patent_id %in%  pull(tmp_patents_n,patent_id))
 
 
+patents_found_3 <- rbind(patents_found_3, tmp_patents_n)
+
+tmp_patents_0 <- tmp_patents_0 %>%
+  filter( !patent_id %in%  pull(tmp_patents_n,patent_id))
 
 patent_rfg <- rbind (patents_found, patents_found_2, patents_found_3)
 
