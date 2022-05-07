@@ -1,6 +1,6 @@
 
 tmp_patents_0 <- patents_text  %>%
-  filter(patent_id %in%  pull(patents_with_ipc_ok, patent_id)) 
+  filter(!patent_id %in%  pull(patents_with_ipc_ok, patent_id)) 
 
 tmp_patents_0 <- tmp_patents_0 %>%
   filter(!(patent_id %in%  pull(patents_with_offtopic, patent_id)))
@@ -9,14 +9,14 @@ tmp_patents_0 <- tmp_patents_0 %>%
 #   (real-time OR realtime OR (real NEAR time)) AND sport** AND (imag+ OR video+)
 tmp_patents_n <- tmp_patents_0 %>%
   filter(((str_detect(text, "real-time")
-          | str_detect(text, "real time")
-          | str_detect(text, 'real.{0,10}time'))
+           | str_detect(text, "real time")
+           | str_detect(text, 'real.{0,10}time'))
           & (str_detect(text, "(?<![\\w])sport")
              | str_detect(text, "(?<![\\w])race"))
           & (str_detect(text, "imag")
-          | str_detect(text, "video"))) == TRUE) 
+             | str_detect(text, "video"))) == TRUE) 
 
-patents_found <- tmp_patents_n
+patents_found_2 <- tmp_patents_n
 
 # remove patents founded at point 2
 tmp_patents_0 <- tmp_patents_0 %>%
@@ -27,10 +27,10 @@ tmp_patents_0 <- tmp_patents_0 %>%
 #   ((imag+ OR video+) 3NEAR interpret+) AND sport**
 tmp_patents_n <- tmp_patents_0 %>%
   filter(((str_detect(text, "imag.{1,50}(interpret|elaborat|analys|process)")
-          | str_detect(text,"(interpret|elaborat|analys|process).{1,50}imag"))
+           | str_detect(text,"(interpret|elaborat|analys|process).{1,50}imag"))
           & str_detect(text, "(?<![\\w])sport")) == TRUE) 
 
-patents_found <- rbind(patents_found,tmp_patents_n)
+patents_found_2 <- rbind(patents_found_2,tmp_patents_n)
 
 # remove patents founded at point 3
 tmp_patents_0 <- tmp_patents_0 %>%
@@ -46,20 +46,20 @@ tmp_patents_n <- tmp_patents_0 %>%
            | str_detect(text,"pixel"))
           & str_detect(text, "(?<![\\w])sport")) == TRUE) 
 
-patents_found <- rbind(patents_found,tmp_patents_n)
+patents_found_2 <- rbind(patents_found_2,tmp_patents_n)
 
 # remove patents founded at point 4
 tmp_patents_0 <- tmp_patents_0 %>%
   filter( !patent_id %in% pull(tmp_patents_n,patent_id)  )
-  
+
 # 5 Searchfor broadcast+ (in anysport!) + sport in title OR abstract OR claims: 
 #   broadcast+ AND sport**
-  
+
 tmp_patents_n <- tmp_patents_0 %>%
   filter((str_detect(text, "broadcast")
           & str_detect(text, "(?<![\\w])sport")) == TRUE) 
 
-patents_found <- rbind(patents_found,tmp_patents_n)
+patents_found_2 <- rbind(patents_found_2,tmp_patents_n)
 
 # remove patents founded at point 5
 tmp_patents_0 <- tmp_patents_0 %>%
@@ -80,7 +80,7 @@ tmp_patents_n <- tmp_patents_0 %>%
            | str_detect(text, "trajector"))
           & str_detect(text, "(?<![\\w])sport")) == TRUE) 
 
-patents_found <- rbind(patents_found,tmp_patents_n)
+patents_found_2 <- rbind(patents_found_2,tmp_patents_n)
 
 # remove patents founded at point 6
 tmp_patents_0 <- tmp_patents_0 %>%
@@ -94,18 +94,18 @@ tmp_patents_0 <- tmp_patents_0 %>%
 tmp_patents_n <- tmp_patents_0 %>%
   filter((str_detect(text, "helmet")
           & str_detect(text, "(?<![\\w])sport")
-        ) 
-        | ((str_detect(text, "imag")
-            | str_detect(text, "video")
-            | str_detect(text, "camera")
-            | str_detect(text, "pixel")
-            | str_detect(text, "broadcast"))
-           &  str_detect(text, "helmet")
-           & !(str_detect(text, "helmet.{1,50}work")
-               | str_detect(text,"work.{1,50}helmet")))
-        == TRUE) 
+  ) 
+  | ((str_detect(text, "imag")
+      | str_detect(text, "video")
+      | str_detect(text, "camera")
+      | str_detect(text, "pixel")
+      | str_detect(text, "broadcast"))
+     &  str_detect(text, "helmet")
+     & !(str_detect(text, "helmet.{1,50}work")
+         | str_detect(text,"work.{1,50}helmet")))
+  == TRUE) 
 
-patents_found <- rbind(patents_found,tmp_patents_n)
+patents_found_2 <- rbind(patents_found_2,tmp_patents_n)
 
 # remove patents founded at point 7
 tmp_patents_0 <- tmp_patents_0 %>%
@@ -118,11 +118,11 @@ tmp_patents_0 <- tmp_patents_0 %>%
 
 tmp_patents_n <- tmp_patents_0 %>%
   filter((
-          (str_detect(text, "quantum") | str_detect(text, "quantic"))
-        & (str_detect(text, "(?<![\\w])vehicl") | str_detect(text, "(?<![\\w])sport"))
-        ) == TRUE) 
+    (str_detect(text, "quantum") | str_detect(text, "quantic"))
+    & (str_detect(text, "(?<![\\w])vehicl") | str_detect(text, "(?<![\\w])sport"))
+  ) == TRUE) 
 
-patents_found <- rbind(patents_found,tmp_patents_n)
+patents_found_2 <- rbind(patents_found_2,tmp_patents_n)
 
 # remove patents founded at point 8
 tmp_patents_0 <- tmp_patents_0 %>%
@@ -139,9 +139,9 @@ tmp_patents_n <- tmp_patents_0 %>%
            | str_detect(text,"video"))
           & str_detect(text, "(?<![\\w])damag")
           & (str_detect(text, "(?<![\\w])vehicl") | str_detect(text, "(?<![\\w])sport"))
-             ) == TRUE) 
+  ) == TRUE) 
 
-patents_found <- rbind(patents_found,tmp_patents_n)
+patents_found_2 <- rbind(patents_found_2,tmp_patents_n)
 
 # remove patents founded at point 9 
 tmp_patents_0 <- tmp_patents_0 %>%
@@ -152,16 +152,16 @@ tmp_patents_0 <- tmp_patents_0 %>%
 
 tmp_patents_n <- tmp_patents_0 %>%
   filter((
-          (str_detect(text, "simulat")
-           | str_detect(text,"(?<![\\w])train")
-           | str_detect(text,"(?<![\\w])gam"))
-          & (str_detect(text,"imag")
-           | str_detect(text,"video"))
-          & str_detect(text, "pilot")
-          & (str_detect(text, "(?<![\\w])vehicl") | str_detect(text, "(?<![\\w])sport"))
-          ) == TRUE) 
+    (str_detect(text, "simulat")
+     | str_detect(text,"(?<![\\w])train")
+     | str_detect(text,"(?<![\\w])gam"))
+    & (str_detect(text,"imag")
+       | str_detect(text,"video"))
+    & str_detect(text, "pilot")
+    & (str_detect(text, "(?<![\\w])vehicl") | str_detect(text, "(?<![\\w])sport"))
+  ) == TRUE) 
 
-patents_found <- rbind(patents_found,tmp_patents_n)
+patents_found_2 <- rbind(patents_found_2,tmp_patents_n)
 
 # remove patents founded at point 10
 tmp_patents_0 <- tmp_patents_0 %>%
@@ -174,11 +174,11 @@ tmp_patents_0 <- tmp_patents_0 %>%
 tmp_patents_n <- tmp_patents_0 %>%
   filter((
     (str_detect(text,"imag")
-       | str_detect(text,"video"))
+     | str_detect(text,"video"))
     & str_detect(text, "(?<![\\w])sport")
   ) == TRUE) 
 
-patents_found <- rbind(patents_found,tmp_patents_n)
+patents_found_2 <- rbind(patents_found_2,tmp_patents_n)
 
 # remove patents founded at point 11
 tmp_patents_0 <- tmp_patents_0 %>%
@@ -199,7 +199,7 @@ tmp_patents_n <- tmp_patents_0 %>%
     & str_detect(text, "(?<![\\w])gam")
   ) == TRUE) 
 
-patents_found <- rbind(patents_found,tmp_patents_n)
+patents_found_2 <- rbind(patents_found_2,tmp_patents_n)
 
 # remove patents founded at point 12_1
 tmp_patents_0 <- tmp_patents_0 %>%
@@ -214,7 +214,7 @@ tmp_patents_n <- tmp_patents_0 %>%
     & str_detect(text, "(?<![\\w])sport")
   ) == TRUE) 
 
-patents_found <- rbind(patents_found,tmp_patents_n)
+patents_found_2 <- rbind(patents_found_2,tmp_patents_n)
 
 # remove patents founded at point 12_2
 tmp_patents_0 <- tmp_patents_0 %>%
@@ -228,7 +228,7 @@ tmp_patents_n <- tmp_patents_0 %>%
     #& str_detect(text, "(?<![\\w])sport")
   ) == TRUE) 
 
-patents_found <- rbind(patents_found,tmp_patents_n)
+patents_found_2 <- rbind(patents_found_2,tmp_patents_n)
 
 # remove patents founded at point 12_3
 tmp_patents_0 <- tmp_patents_0 %>%
@@ -240,11 +240,11 @@ tmp_patents_n <- tmp_patents_0 %>%
   filter((
     str_detect(text,"(?<![\\w])saf")
     & ((str_detect(text, "(?<![\\w])vehicl")
-    & str_detect(text, "(?<![\\w])gam"))
-    | str_detect(text, "(?<![\\w])sport"))
+        & str_detect(text, "(?<![\\w])gam"))
+       | str_detect(text, "(?<![\\w])sport"))
   ) == TRUE) 
 
-patents_found <- rbind(patents_found,tmp_patents_n)
+patents_found_2 <- rbind(patents_found_2,tmp_patents_n)
 
 # remove patents founded at point 12_4
 tmp_patents_0 <- tmp_patents_0 %>%
@@ -260,7 +260,7 @@ tmp_patents_n <- tmp_patents_0 %>%
        | str_detect(text, "(?<![\\w])sport"))
   ) == TRUE) 
 
-patents_found <- rbind(patents_found,tmp_patents_n)
+patents_found_2 <- rbind(patents_found_2,tmp_patents_n)
 
 # remove patents founded at point 12_5 
 tmp_patents_0 <- tmp_patents_0 %>%
@@ -276,7 +276,7 @@ tmp_patents_n <- tmp_patents_0 %>%
        | str_detect(text, "(?<![\\w])sport"))
   ) == TRUE) 
 
-patents_found <- rbind(patents_found,tmp_patents_n)
+patents_found_2 <- rbind(patents_found_2,tmp_patents_n)
 
 # remove patents founded at point 12_6
 tmp_patents_0 <- tmp_patents_0 %>%

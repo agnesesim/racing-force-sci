@@ -92,3 +92,4 @@ filter_founds <- function(data, frequence){
     filter(freq>frequence) 
   return(found)
 }
+
