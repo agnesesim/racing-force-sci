@@ -97,4 +97,7 @@ tmp_patents_0 <- tmp_patents_0 %>%
 
 patent_rfg <- rbind (patents_found, patents_found_2, patents_found_3)
 
+patent_rfg %>% 
+  select(patent_id)%>% 
+  write_csv("patent_RFGA.csv")
 
