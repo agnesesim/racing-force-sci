@@ -210,7 +210,9 @@ tmp_patents_0 <- tmp_patents_0 %>%
 tmp_patents_n <- tmp_patents_0 %>%
   filter((
     (str_detect(text,"imag.{1,50}classificat")
-     | str_detect(text,"(?<![\\w])obj.{1,50}recogn"))
+     | str_detect(text,"(?<![\\w])obj.{1,50}recogn")
+     | str_detect(text,"classificat.{1,50}imag")
+     | str_detect(text,"recogn.{1,50}(?<![\\w])obj"))
     & str_detect(text, "(?<![\\w])sport")
   ) == TRUE) 
 

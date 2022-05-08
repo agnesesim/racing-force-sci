@@ -24,7 +24,10 @@ tmp_patents_n <- tmp_patents_0 %>%
   filter(str_detect(text, "auto.{0,5}rac")
         | str_detect(text, "moto.{0,5}rac") 
         | str_detect(text, "rally.{0,5}rac") 
-        | str_detect(text, "kart.{0,5}rac") == TRUE)  
+        | str_detect(text, "kart.{0,5}rac")
+        | str_detect(text, "motorcycle")
+        | str_detect(text, "motocross") 
+        | str_detect(text, "superbike") == TRUE)  
 
 patents_found_3 <- rbind(patents_found_3, tmp_patents_n)
 
@@ -57,7 +60,7 @@ tmp_patents_0 <- tmp_patents_0 %>%
   filter( !patent_id %in%  pull(tmp_patents_n,patent_id))
 
 tmp_patents_n <- tmp_patents_0 %>%
-  mutate(match = str_match_all(text, "car.{0,50}safe")) %>%
+  mutate(match = str_match_all(text, "(?![\\w])car.{0,50}safe")) %>%
   mutate(match_count = lengths(match)) %>%
   mutate(match_freq = (match_count/totwords)*100) %>%
   filter(match_freq>0.5)  %>%
@@ -86,13 +89,6 @@ tmp_patents_n <- tmp_patents_0 %>%
   mutate(match_freq = (match_count/totwords)*100) %>%
   filter(match_freq>0.5)  %>%
   select(patent_id, ipc_classes, text, totwords)
-
-
-patents_found_3 <- rbind(patents_found_3, tmp_patents_n)
-
-tmp_patents_0 <- tmp_patents_0 %>%
-  filter( !patent_id %in%  pull(tmp_patents_n,patent_id))
-
 
 patents_found_3 <- rbind(patents_found_3, tmp_patents_n)
 
